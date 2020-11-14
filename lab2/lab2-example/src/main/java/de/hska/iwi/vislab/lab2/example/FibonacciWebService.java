@@ -1,5 +1,6 @@
 package de.hska.iwi.vislab.lab2.example;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -11,20 +12,32 @@ import javax.ws.rs.core.MediaType;
 @Path("fbcc")
 public class FibonacciWebService {
 
-    private int getFibonacci(int fibonacciNumber) {
-        int prevSum = 1;
+    private int fibonacciNumber = 0;
 
-        if (fibonacciNumber == 1) {
+    private void setFibonacciNumber(int i){
+        this.fibonacciNumber = i;
+    }
+
+    private int getFibonacciNumber(){
+        return this.fibonacciNumber;
+    }
+
+    private int getFibonacci() {
+        int prevSum = 1;
+        if (getFibonacciNumber() == 1) {
+            setFibonacciNumber(2);
             return 0;
-        } else if (fibonacciNumber == 2) {
+        } else if (getFibonacciNumber() == 2) {
+            setFibonacciNumber(3);
             return prevSum;
         } else {
             int sum = prevSum;
-            for (int i = 3; i <= fibonacciNumber; i++) {
+            for (int i = 3; i <= getFibonacciNumber(); i++) {
                 int oldSum = sum;
                 sum = sum + prevSum;
                 prevSum = oldSum;
             }
+            setFibonacciNumber(getFibonacciNumber()+1);
             return sum;
         }
     }
@@ -38,6 +51,11 @@ public class FibonacciWebService {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getIt() {
-        return Integer.toString(getFibonacci(2 + 1));
+        return Integer.toString(getFibonacci());
+    }
+
+    @DELETE
+    public void restartFibonacci() {
+        setFibonacciNumber(0);
     }
 }
