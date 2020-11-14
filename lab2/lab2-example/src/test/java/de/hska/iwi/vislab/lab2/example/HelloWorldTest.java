@@ -21,6 +21,7 @@ public class HelloWorldTest {
 	public void setUp() throws Exception {
 		// start the server
 		server = Main.startServer();
+		server.start();
 		// create the client
 		Client c = ClientBuilder.newClient();
 
@@ -33,6 +34,8 @@ public class HelloWorldTest {
 		// org.glassfish.jersey.media.json.JsonJaxbFeature());
 
 		target = c.target(Main.BASE_URI);
+		System.out.println(target.path( "/fbcc" ).request( MediaType.TEXT_PLAIN ).get( String.class ));
+		target.path("/fbcc").request(MediaType.TEXT_PLAIN).delete();
 	}
 
 	@After
@@ -44,8 +47,8 @@ public class HelloWorldTest {
 	 * Test to see that the message "Got it!" is sent in the response.
 	 */
 	@Test
-	public void testSayHello() {
-		String responseMsg = target.path("helloworld").request().accept(MediaType.TEXT_PLAIN).get(String.class);
-		assertEquals("Hallo Welt!", responseMsg);
+	public void receiveFirstFibonacciNumberTest() {
+		String responseMsg = target.path("fbcc").request().accept(MediaType.TEXT_PLAIN).get(String.class);
+		assertEquals("0", responseMsg);
 	}
 }
