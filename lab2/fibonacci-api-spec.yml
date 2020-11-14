@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  title: Fibonacci Webservice
+  description: Fibonacci REST API
+  version: 1.0.0-oas3
+paths:
+  /fbcc:
+    get:
+      summary: Get fibonacci number
+      description: Get netxt fibonacci number
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+        '500':
+          description: Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+    put:
+      summary: Set fibonacci number
+      description: Set the fibonacci counter to a specific number
+      parameters:
+        - name: fibonaccinumber
+          description: The number to set the counter to
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+    delete:
+      summary: Reset fibonacci number
+      description: Reset the fibonacci counter to its initial state
+      responses:
+        '406':
+          description: NOT ACCEPTABLE
+        '500':
+          description: Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+
+servers:
+  - url: 'https://hs-karlsruhe.de/iwi/'
