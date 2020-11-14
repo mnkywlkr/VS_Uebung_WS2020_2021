@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class HelloWorldTest {
+public class FibonacciWebServiceTest {
 
 	private HttpServer server;
 	private WebTarget target;
@@ -34,7 +34,6 @@ public class HelloWorldTest {
 		// org.glassfish.jersey.media.json.JsonJaxbFeature());
 
 		target = c.target(Main.BASE_URI);
-		System.out.println(target.path( "/fbcc" ).request( MediaType.TEXT_PLAIN ).get( String.class ));
 		target.path("/fbcc").request(MediaType.TEXT_PLAIN).delete();
 	}
 
@@ -48,7 +47,12 @@ public class HelloWorldTest {
 	 */
 	@Test
 	public void receiveFirstFibonacciNumberTest() {
-		String responseMsg = target.path("fbcc").request().accept(MediaType.TEXT_PLAIN).get(String.class);
-		assertEquals("0", responseMsg);
+		String fibonacciNumber = target
+				.path("fbcc")
+					.request()
+						.accept(MediaType.TEXT_PLAIN)
+						.get(String.class);
+
+		assertEquals("0", fibonacciNumber);
 	}
 }
