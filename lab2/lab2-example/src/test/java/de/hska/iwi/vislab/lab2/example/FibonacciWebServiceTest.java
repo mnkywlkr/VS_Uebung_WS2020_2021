@@ -1,15 +1,16 @@
 package de.hska.iwi.vislab.lab2.example;
 
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import org.glassfish.grizzly.http.server.HttpServer;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class FibonacciWebServiceTest {
@@ -35,6 +36,7 @@ public class FibonacciWebServiceTest {
 
 		target = c.target(Main.BASE_URI);
 		target.path("/fbcc").request(MediaType.TEXT_PLAIN).delete();
+
 	}
 
 	@After
@@ -54,5 +56,31 @@ public class FibonacciWebServiceTest {
 						.get(String.class);
 
 		assertEquals("0", fibonacciNumber);
+	}
+
+	@Test
+	public void deleteFibonacciCounter() {
+		String fibonacciNumber = "0";
+		// Zwei mal die aktuelle Fibonacci Zahl holen
+		for (int i=0; i < 2; i++) {
+			fibonacciNumber = target
+				.path("fbcc")
+					.request()
+						.accept(MediaType.TEXT_PLAIN)
+						.get(String.class);
+		}
+
+		// 0 1 1 2 3 5 8 13 ...
+		Assert.assertEquals("1", fibonacciNumber);
+
+		target.path("fbcc").request().delete();
+
+		fibonacciNumber = target
+				.path("fbcc")
+				.request()
+				.accept(MediaType.TEXT_PLAIN)
+				.get(String.class);
+
+		Assert.assertEquals("0", fibonacciNumber);
 	}
 }
