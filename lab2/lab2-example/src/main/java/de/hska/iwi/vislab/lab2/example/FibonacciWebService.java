@@ -1,19 +1,12 @@
 package de.hska.iwi.vislab.lab2.example;
 
 import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT; 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Root resource (exposed at "myresource" path)
+ * Root resource (exposed at "fbcc" path)
  */
 @Path("fbcc")
 @Singleton
@@ -64,17 +57,18 @@ public class FibonacciWebService {
     }
 
     @DELETE
-    public void restartFibonacci() {
+    public Response restartFibonacci() {
         setFibonacciIndex(0);
+        return Response.noContent().build();
     }
 
     /**
     * Method handling HTTP PUT request. Updates current fibonacci number.
     */ 
     @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    public Response specificFibonacci(@QueryParam ("fibonaccinumber") int i){
-        setFibonacciIndex(i);
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response specificFibonacci(@QueryParam("specificFibonacci") int specificFibonacci) {
+        setFibonacciIndex(specificFibonacci);
         return Response.ok(getFibonacci()).build();
     }
 }
