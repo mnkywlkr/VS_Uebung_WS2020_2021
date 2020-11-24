@@ -53,7 +53,7 @@ public class FibonacciWebServiceTest {
                 .path("fbcc")
                 .request()
                 .accept(MediaType.TEXT_PLAIN)
-                .get(String.class);
+                .post(null, String.class);
 
         assertEquals("0", fibonacciNumber);
     }
@@ -67,7 +67,7 @@ public class FibonacciWebServiceTest {
                     .path("fbcc")
                     .request()
                     .accept(MediaType.TEXT_PLAIN)
-                    .get(String.class);
+                    .post(null, String.class);
         }
 
         // 0 1 1 2 3 5 8 13 ...
@@ -79,7 +79,7 @@ public class FibonacciWebServiceTest {
                 .path("fbcc")
                 .request()
                 .accept(MediaType.TEXT_PLAIN)
-                .get(String.class);
+                .post(null, String.class);
 
         Assert.assertEquals("0", fibonacciNumber);
     }
@@ -95,7 +95,7 @@ public class FibonacciWebServiceTest {
                     .path("fbcc")
                     .request()
                     .accept(MediaType.TEXT_PLAIN)
-                    .get(String.class);
+                    .post(null, String.class);
         }
 
         // 0 1 1 2 3 5 8 13 ...
@@ -113,7 +113,7 @@ public class FibonacciWebServiceTest {
                 .path("fbcc")
                 .request()
                 .accept(MediaType.TEXT_PLAIN)
-                .get(String.class);
+                .post(null, String.class);
 
         // 0 1 1 2 3 5 8 13 ...
         Assert.assertEquals("2", fibonacciNumber);

@@ -50,7 +50,7 @@ public class FibonacciWebService {
      *
      * @return String that will be returned as a text/plain response.
      */
-    @GET
+    @POST
     @Produces(MediaType.TEXT_PLAIN)
     public String getIt() {
         return Integer.toString(getFibonacci());
@@ -64,7 +64,7 @@ public class FibonacciWebService {
 
     /**
     * Method handling HTTP PUT request. Updates current fibonacci number.
-    */ 
+    */
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
     public Response specificFibonacci(@QueryParam("specificFibonacci") int specificFibonacci) {
