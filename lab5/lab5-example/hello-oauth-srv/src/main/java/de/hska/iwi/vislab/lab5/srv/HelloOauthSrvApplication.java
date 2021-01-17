@@ -82,7 +82,7 @@ public class HelloOauthSrvApplication{
      *
      * @return String that will be returned as a JSON response.
      */
-    @RequestMapping(value = "/fibonacci", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/fibonacci", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
     public String getIt() {
         return Integer.toString(getFibonacci());

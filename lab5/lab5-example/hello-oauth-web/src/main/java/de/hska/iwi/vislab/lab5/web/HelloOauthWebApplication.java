@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
+import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.stereotype.Controller;
@@ -55,7 +57,7 @@ public class HelloOauthWebApplication {
 
 	@RequestMapping("/next")
 	public String next(Model model) {
-		String nextFibonacci = restTemplate.getForObject(baseUrl + "/fibonacci", String.class);
+		String nextFibonacci = restTemplate.postForObject(baseUrl + "/fibonacci", null, String.class);
 		model.addAttribute("fibonacci", nextFibonacci);
 		// name of the template to return
 		return "greet";
@@ -81,16 +83,26 @@ public class HelloOauthWebApplication {
 
 	
 	@Bean
-	public OAuth2RestOperations restTemplate(OAuth2ClientContext oauth2ClientContext) {
+	public OAuth2RestOperations restTemplate(@Qualifier("oauth2ClientContext") OAuth2ClientContext oauth2ClientContext) {
 		return new OAuth2RestTemplate(resource(), oauth2ClientContext);
 	}
 
+//	@Bean
+//	protected OAuth2ProtectedResourceDetails resource() {
+//		AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
+//		resource.setAccessTokenUri(tokenUrl);
+//		resource.setUserAuthorizationUri(authorizeUrl);
+//		resource.setClientId("my-trusted-client");
+//		resource.setClientSecret("secret");
+//		return resource;
+//	}
+
 	@Bean
 	protected OAuth2ProtectedResourceDetails resource() {
-		AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
+		ClientCredentialsResourceDetails resource = new ClientCredentialsResourceDetails();
 		resource.setAccessTokenUri(tokenUrl);
-		resource.setUserAuthorizationUri(authorizeUrl);
-		resource.setClientId("my-trusted-client");
+		resource.setClientId("my-client-with-secret");
+		resource.setClientSecret("secret");
 		return resource;
 	}
 
