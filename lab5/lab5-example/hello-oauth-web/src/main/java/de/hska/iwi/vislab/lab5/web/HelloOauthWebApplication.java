@@ -71,11 +71,9 @@ public class HelloOauthWebApplication {
 		return "greet";
 	}
 
-	@RequestMapping("/specific")
+	@RequestMapping(value = "/specific", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String specific(@RequestParam int index, Model model) {
-		Map<String, String> params = new HashMap<String, String>();
-		restTemplate.put(baseUrl + "/fibonacci/"+index, params);
-		String specific = restTemplate.getForObject(baseUrl + "/fibonacci", String.class);
+		String specific = restTemplate.getForObject(baseUrl + "/fibonacci/" + index, String.class);
 		model.addAttribute("fibonacci", specific);
 		// name of the template to return
 		return "greet";
@@ -83,7 +81,7 @@ public class HelloOauthWebApplication {
 
 	
 	@Bean
-	public OAuth2RestOperations restTemplate(@Qualifier("oauth2ClientContext") OAuth2ClientContext oauth2ClientContext) {
+	public OAuth2RestOperations restTemplate(OAuth2ClientContext oauth2ClientContext) {
 		return new OAuth2RestTemplate(resource(), oauth2ClientContext);
 	}
 

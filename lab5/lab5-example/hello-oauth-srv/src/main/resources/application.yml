@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: hello oauth srv
@@ -10,3 +11,5 @@ security:
 logging:
   level:
     org.springframework.security: DEBUG
+server:
+  port: 7071
