@@ -36,13 +36,13 @@ public class HelloOauthWebApplication {
 		SpringApplication.run(HelloOauthWebApplication.class, args);
 	}
 
-	@Value("${oauth.resource:http://localhost:8080}")
+	@Value("${oauth.resource:http://localhost:7071}")
 	private String baseUrl;
 
-	@Value("${oauth.authorize:http://localhost:8080/oauth/authorize}")
+	@Value("${oauth.authorize:http://localhost:7071/oauth/authorize}")
 	private String authorizeUrl;
 
-	@Value("${oauth.token:http://localhost:8080/oauth/token}")
+	@Value("${oauth.token:http://localhost:7071/oauth/token}")
 	private String tokenUrl;
 
 	@Autowired
@@ -55,7 +55,7 @@ public class HelloOauthWebApplication {
 
 	@RequestMapping("/next")
 	public String next(Model model) {
-		String nextFibonacci = restTemplate.getForObject(baseUrl + "/fibonacci", String.class);
+		String nextFibonacci = restTemplate.postForObject(baseUrl + "/fibonacci", null, String.class);
 		model.addAttribute("fibonacci", nextFibonacci);
 		// name of the template to return
 		return "greet";
@@ -69,17 +69,15 @@ public class HelloOauthWebApplication {
 		return "greet";
 	}
 
-	@RequestMapping("/specific")
+	@RequestMapping(value = "/specific", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String specific(@RequestParam int index, Model model) {
-		Map<String, String> params = new HashMap<String, String>();
-		restTemplate.put(baseUrl + "/fibonacci/"+index, params);
-		String specific = restTemplate.getForObject(baseUrl + "/fibonacci", String.class);
+		String specific = restTemplate.getForObject(baseUrl + "/fibonacci/" + index, String.class);
 		model.addAttribute("fibonacci", specific);
 		// name of the template to return
 		return "greet";
 	}
 
-	
+
 	@Bean
 	public OAuth2RestOperations restTemplate(OAuth2ClientContext oauth2ClientContext) {
 		return new OAuth2RestTemplate(resource(), oauth2ClientContext);
@@ -89,8 +87,11 @@ public class HelloOauthWebApplication {
 	protected OAuth2ProtectedResourceDetails resource() {
 		AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
 		resource.setAccessTokenUri(tokenUrl);
-		resource.setUserAuthorizationUri(authorizeUrl);
-		resource.setClientId("my-trusted-client");
+		// resource.setUserAuthorizationUri(authorizeUrl);
+		resource.setClientId("my-client-with-secret");
+		resource.setClientSecret("secret");
+		resource.setGrantType("client_credentials");
+		// resource.setGrantType("authorization_code");
 		return resource;
 	}
 

@@ -43,7 +43,7 @@ public class HelloOauthSrvApplication{
 	}
 
 	// here is for fibonacci
-	
+
     private int fibonacciIndex = 0;
 
     private void setFibonacciIndex(int i){
@@ -82,7 +82,7 @@ public class HelloOauthSrvApplication{
      *
      * @return String that will be returned as a JSON response.
      */
-    @RequestMapping(value = "/fibonacci", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/fibonacci", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
     public String getIt() {
         return Integer.toString(getFibonacci());
@@ -97,10 +97,10 @@ public class HelloOauthSrvApplication{
     /**
     * Method handling HTTP PUT request. Updates current fibonacci number.
     */
-    @RequestMapping(value = "/fibonacci/{index}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/fibonacci/{index}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> specificFibonacci(@PathVariable int index) {
 		setFibonacciIndex(index);
-        return new ResponseEntity<>(index, HttpStatus.OK);
+        return new ResponseEntity<>(getFibonacci(), HttpStatus.OK);
 	}
 
 
