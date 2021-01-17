@@ -1,10 +1,16 @@
 package de.hska.iwi.vislab.lab5.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -13,7 +19,13 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @SpringBootApplication
 @EnableOAuth2Client
@@ -41,13 +53,33 @@ public class HelloOauthWebApplication {
 		return "greet";
 	}
 
-	@RequestMapping("/greet")
+	@RequestMapping("/next")
 	public String next(Model model) {
-		String hello = restTemplate.getForObject(baseUrl + "/hello", String.class);
-		model.addAttribute("greet", hello);
+		String nextFibonacci = restTemplate.getForObject(baseUrl + "/fibonacci", String.class);
+		model.addAttribute("fibonacci", nextFibonacci);
+		// name of the template to return
 		return "greet";
 	}
 
+	@RequestMapping(value = "/restart")
+	public String delete(Model model) {
+		restTemplate.delete(baseUrl + "/fibonacci");
+		model.addAttribute("fibonacci", "restarted the fibonacci count");
+		// name of the template to return
+		return "greet";
+	}
+
+	@RequestMapping("/specific")
+	public String specific(@RequestParam int index, Model model) {
+		Map<String, String> params = new HashMap<String, String>();
+		restTemplate.put(baseUrl + "/fibonacci/"+index, params);
+		String specific = restTemplate.getForObject(baseUrl + "/fibonacci", String.class);
+		model.addAttribute("fibonacci", specific);
+		// name of the template to return
+		return "greet";
+	}
+
+	
 	@Bean
 	public OAuth2RestOperations restTemplate(OAuth2ClientContext oauth2ClientContext) {
 		return new OAuth2RestTemplate(resource(), oauth2ClientContext);

@@ -1,18 +1,25 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Greetings App</title>
+    <title>Fibonacci App</title>
 </head>
 <body>
 
-    <h1>Greetings App</h1>
+    <h1>Fibonacci App</h1>
 
-    <p th:text="${greet} != null ? ${greet} : 'No greeting yet.'"/>
+    <p th:text="${fibonacci} != null ? ${fibonacci} : 'No Fibonacci yet.'"/>
 
-    <p>Press greet to proceed.</p>
+    <p>Press one of the buttons to proceed.</p>
 
     <form>
-        <input type="submit" value="greet" formaction="/client/greet" formmethod="get"></input>
+        <input type="submit" value="get next Fibonacci" formaction="/client/next" formmethod="get"></input>
+    </form>
+    <form>
+        <input type="submit" value="restart Fibonacci" formaction="/client/restart" formmethod="delete"></input>
+    </form>
+    <form>
+        <input type="number" th:name="index"></input>
+        <input type="submit" value="specific Fibonacci" formaction="/client/specific" formmethod="get"></input>
     </form>
 
 </body>
