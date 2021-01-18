@@ -52,6 +52,13 @@ public class HelloOauthWebApplication {
 
 	@RequestMapping("/")
 	public String home() {
+		return "home";
+	}
+
+	@RequestMapping("/greet")
+	public String greet(Model model) {
+		String hello = restTemplate.getForObject(baseUrl + "/hello", String.class);
+		model.addAttribute("greet", hello);
 		return "greet";
 	}
 
@@ -85,23 +92,22 @@ public class HelloOauthWebApplication {
 		return new OAuth2RestTemplate(resource(), oauth2ClientContext);
 	}
 
+	@Bean
+	protected OAuth2ProtectedResourceDetails resource() {
+		AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
+		resource.setAccessTokenUri(tokenUrl);
+		resource.setUserAuthorizationUri(authorizeUrl);
+		resource.setClientId("my-trusted-client");
+		return resource;
+	}
+
 //	@Bean
 //	protected OAuth2ProtectedResourceDetails resource() {
-//		AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
+//		ClientCredentialsResourceDetails resource = new ClientCredentialsResourceDetails();
 //		resource.setAccessTokenUri(tokenUrl);
-//		resource.setUserAuthorizationUri(authorizeUrl);
-//		resource.setClientId("my-trusted-client");
+//		resource.setClientId("my-client-with-secret");
 //		resource.setClientSecret("secret");
 //		return resource;
 //	}
-
-	@Bean
-	protected OAuth2ProtectedResourceDetails resource() {
-		ClientCredentialsResourceDetails resource = new ClientCredentialsResourceDetails();
-		resource.setAccessTokenUri(tokenUrl);
-		resource.setClientId("my-client-with-secret");
-		resource.setClientSecret("secret");
-		return resource;
-	}
 
 }

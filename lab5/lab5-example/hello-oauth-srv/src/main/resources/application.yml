@@ -12,4 +12,4 @@ logging:
   level:
     org.springframework.security: DEBUG
 server:
-  port: 7071
+  port: 8080
