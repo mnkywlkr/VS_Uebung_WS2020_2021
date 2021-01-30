@@ -54,33 +54,93 @@ public class TransactionLibrary {
                 long flightExpiration =((FlightReservationDoc)responseFlightReservation.getEntity()).getExpires();
                 long hotelExpiration =((HotelReservationDoc)responseHotelReservation.getEntity()).getExpires();                
                 long currentTime = System.currentTimeMillis(); 
-                long shorterExpiration = flightExpiration <= hotelExpiration ? flightExpiration : hotelExpiration; 
+                long shorterExpiration = flightExpiration <= hotelExpiration ? flightExpiration : hotelExpiration;
+                long longerExpiration = flightExpiration > hotelExpiration ? flightExpiration : hotelExpiration;
 
                 boolean isFlightShorter = flightExpiration <= hotelExpiration;
+                boolean isShorterSuccessful = false;
+                boolean isLongerSuccessful = false;
 
                 Response responseFlightConfirm;
                 Response responseHotelConfirm;
+                // responseFlightConfirm.getStatus() != 200 || responseHotelConfirm.getStatus() != 200
                 do {
-                    currentTime = System.currentTimeMillis(); 
-                    if(!(currentTime > shorterExpiration))
-                    {
+                    currentTime = System.currentTimeMillis();
+                    if(!isShorterSuccessful){ // shorter first
                         if (isFlightShorter){
                             responseFlightConfirm = webTargetFlight.request().put(null);
-                            responseHotelConfirm = webTargetHotel.request().put(null);
+                            if(responseFlightConfirm.getStatus() == 200)
+                            {
+                                isShorterSuccessful = true;
+                            }
                         } else {
-
+                            responseHotelConfirm = webTargetHotel.request().put(null);
+                            if(responseHotelConfirm.getStatus() == 200)
+                            {
+                                isShorterSuccessful = true;
+                            }
                         }
                     }
                     else{
-                        // 408 request Timeout
-                        String msg = "Reservation Timeout";
-                        return Response.status(408).entity(msg).build();
+                        // first (shorter) was successful -> try to confim second until it also succed
+                        if (!isFlightShorter){ // now the longer one
+                            responseFlightConfirm = webTargetFlight.request().put(null);
+                            if(responseFlightConfirm.getStatus() == 200)
+                            {
+                                isLongerSuccessful = true;
+                            }
+                        } else {
+                            responseHotelConfirm = webTargetHotel.request().put(null);
+                            if(responseHotelConfirm.getStatus() == 200)
+                            {
+                                isLongerSuccessful = true;
+                            }
+                        }
                     }
-                }while (responseFlightConfirm.getStatus() != 200 || responseHotelConfirm.getStatus() != 200);
+                }while (currentTime < shorterExpiration && !isLongerSuccessful);
+
+
+                if(isShorterSuccessful && !isLongerSuccessful)
+                {
+                    // if shorter timeout is over and only the first confirm succed
+                    // -> try to connfirm second one until its timeout
+                    do{
+                        currentTime = System.currentTimeMillis();
+
+                        if (!isFlightShorter){ // now the longer one
+                            responseFlightConfirm = webTargetFlight.request().put(null);
+                            if(responseFlightConfirm.getStatus() == 200)
+                            {
+                                isLongerSuccessful = true;
+                            }
+                        } else {
+                            responseHotelConfirm = webTargetHotel.request().put(null);
+                            if(responseHotelConfirm.getStatus() == 200)
+                            {
+                                isLongerSuccessful = true;
+                            }
+                        }
+
+                    }while (currentTime < longerExpiration && !isLongerSuccessful);
+                }
+
+                if(isShorterSuccessful && isLongerSuccessful)
+                {
+                    return Response.status(200).entity(null).build();
+                }
+                else
+                {
+                    // Rollback transaction
+                    // 408 request Timeout
+                    String msg = "Reservation Timeout";
+                    return Response.status(408).entity(msg).build();
+
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return Response.status(408).entity(null).build();
     }
 }
