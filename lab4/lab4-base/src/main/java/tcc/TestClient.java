@@ -76,7 +76,7 @@ public class TestClient {
 
 					if (responseHotel.getStatus() != 200 || responseFlight.getStatus() != 200) {
 						System.out.println("Failed : HTTP error code : " + responseFlight.getStatus() + ", " + responseHotel.getStatus());
-						// try again
+
 						// Rollback
 						if(outputHotel.getUrl() != null)
 						{
@@ -168,6 +168,10 @@ public class TestClient {
 								}
 
 							} while (currentTime < longerExpiration && !isLongerSuccessful);
+							if(!isLongerSuccessful && isShorterSuccessful)
+							{
+								throw new RuntimeException("Inkonsistenter Zustand!");
+							}
 						}
 					}
 				}
